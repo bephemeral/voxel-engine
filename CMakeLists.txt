@@ -8,5 +8,6 @@ target_include_directories(engine PUBLIC external/glad/include)
 
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
-target_link_libraries(engine PRIVATE glfw OpenGL::GL)
+target_link_libraries(engine PRIVATE glfw OpenGL::GL glm::glm)
