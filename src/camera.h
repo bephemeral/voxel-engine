@@ -4,17 +4,17 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-enum CameraMovement
-{
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT
-};
-
 class Camera
 {
 public:
+    enum class Movement
+    {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT
+    };
+
     glm::vec3 position;
     glm::vec3 front;
     glm::vec3 up;
@@ -41,7 +41,7 @@ public:
     glm::mat4 getViewMatrix();
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void processKeyboard(CameraMovement direction, float deltaTime);
+    void processKeyboard(Movement direction, float deltaTime);
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
