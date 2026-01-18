@@ -46,6 +46,8 @@ int main()
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     Camera camera{glm::vec3(0.0f, 0.0f, 3.0f)};
     glfwSetWindowUserPointer(window, &camera);
@@ -64,7 +66,7 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(VERTICES), VERTICES, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -73,20 +75,31 @@ int main()
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f)};
     shaderProgram.setMat4("projection", projection);
 
+    int index{0};
+    for (int x{0}; x < 10; ++x)
+    {
+        for (int z{0}; z < 10; ++z)
+        {
+            glm::vec3 translation;
+            translation.x = x;
+            translation.y = 0;
+            translation.z = z;
+
+            shaderProgram.setVec3("offsets[" + std::to_string(x * z) + "]", translation);
+        }
+    }
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // create transformations
-        glm::mat4 model{glm::rotate(IDENTITY_MATRIX, static_cast<float>(glfwGetTime()), glm::vec3(0.5f, 1.0f, 0.0f))};
-        // pass them to the shaders (3 different ways)
-        shaderProgram.setMat4("model", model);
+        shaderProgram.setMat4("model", IDENTITY_MATRIX);
         shaderProgram.setMat4("view", camera.getViewMatrix());
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 36, 100);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
