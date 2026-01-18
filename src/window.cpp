@@ -17,7 +17,10 @@ void processInput(GLFWwindow *window)
 
     AppContext *context{getAppContext(window)};
 
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    bool pauseKeyPressed{glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS};
+    static bool pauseKeyWasPressed{false};
+
+    if (!pauseKeyWasPressed && glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         bool *paused{context->paused};
         *paused = !*paused;
@@ -27,6 +30,7 @@ void processInput(GLFWwindow *window)
             GLFW_CURSOR,
             *paused ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
     }
+    pauseKeyWasPressed = pauseKeyPressed;
 
     Camera *camera{context->camera};
     if (!camera)
@@ -44,16 +48,19 @@ void processInput(GLFWwindow *window)
 
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
 {
-    AppContext *context{getAppContext(window)};
-    if (*(context->paused))
-        return;
-
     static bool firstMouse{true};
     static float lastX{SCR_WIDTH / 2.0f};
     static float lastY{SCR_HEIGHT / 2.0f};
 
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
+
+    AppContext *context{getAppContext(window)};
+    if (*(context->paused))
+    {
+        firstMouse = true;
+        return;
+    }
 
     if (firstMouse)
     {
