@@ -3,6 +3,10 @@
 #include "window.h"
 #include "chunk.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -11,6 +15,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include "context.h"
 
 inline constexpr glm::mat4 IDENTITY_MATRIX{1.0f};
 
@@ -45,12 +50,24 @@ int main()
         return -1;
     }
 
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+    ImGui_ImplOpenGL3_Init();
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     Camera camera{};
-    glfwSetWindowUserPointer(window, &camera);
+    bool paused{false};
+    AppContext appContext{&camera, &paused};
+    glfwSetWindowUserPointer(window, &appContext);
 
     Shader shaderProgram{
         std::filesystem::path{"assets/shaders/shader.vs"},
@@ -77,6 +94,18 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        if (*(appContext.paused))
+        {
+            ImGui::Begin("Settings");
+            ImGui::SliderFloat("Camera Speed", &camera.movementSpeed, 0.1f, 20.0f);
+            ImGui::SliderFloat("Mouse Sensitivity", &camera.mouseSensitivity, 0.01f, 1.0f);
+            ImGui::End();
+        }
+
         shaderProgram.setMat4("view", camera.getViewMatrix());
 
         for (const auto &chunk : chunks)
@@ -85,9 +114,16 @@ int main()
             chunk.renderMesh();
         }
 
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;

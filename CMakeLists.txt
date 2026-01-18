@@ -2,9 +2,32 @@ cmake_minimum_required(VERSION 3.15)
 project(voxel-engine LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(engine src/main.cpp src/shader.cpp src/camera.cpp src/window.cpp src/chunk.cpp external/glad/src/glad.c)
+file(GLOB IMGUI_SRC
+    external/imgui/*.cpp
+)
 
-target_include_directories(engine PUBLIC external/glad/include)
+set(IMGUI_BACKENDS
+    external/imgui/backends/imgui_impl_opengl3.cpp
+    external/imgui/backends/imgui_impl_glfw.cpp
+)
+
+add_executable(engine 
+    src/main.cpp 
+    src/shader.cpp 
+    src/camera.cpp 
+    src/window.cpp 
+    src/chunk.cpp 
+    external/glad/src/glad.c
+    ${IMGUI_SRC}
+    ${IMGUI_BACKENDS}
+)
+
+# Include directories
+target_include_directories(engine PUBLIC 
+    external/glad/include 
+    external/imgui 
+    external/imgui/backends
+)
 
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
