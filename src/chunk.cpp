@@ -3,7 +3,20 @@
 
 Chunk::Chunk(glm::vec3 pos) : position{pos}
 {
-    blocks.fill(true);
+    int index{0};
+    int height{CHUNK_SIZE - 1};
+    int last_x{0};
+    for (auto &block : blocks)
+    {
+        glm::vec3 blockPos{indexToPosition(index++)};
+        if (blockPos.x != last_x)
+        {
+            --height;
+            last_x = blockPos.x;
+        }
+
+        block = (blockPos.y <= height);
+    }
     generateMesh();
 
     glGenVertexArrays(1, &VAO);
@@ -54,6 +67,21 @@ void Chunk::renderMesh() const
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }
 
+inline glm::vec3 Chunk::indexToPosition(size_t index) const
+{
+    int x{index / (CHUNK_SIZE * CHUNK_SIZE)};
+    index %= (CHUNK_SIZE * CHUNK_SIZE);
+
+    int y{index / CHUNK_SIZE};
+    int z{index % CHUNK_SIZE};
+    return glm::vec3{x, y, z};
+}
+
+inline size_t Chunk::positionToIndex(int x, int y, int z) const
+{
+    return x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z;
+}
+
 inline bool Chunk::isBlockSolid(int x, int y, int z) const
 {
     if (x < 0 || x >= CHUNK_SIZE ||
@@ -62,5 +90,5 @@ inline bool Chunk::isBlockSolid(int x, int y, int z) const
     {
         return false;
     }
-    return blocks[x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z];
+    return blocks[positionToIndex(x, y, z)];
 }

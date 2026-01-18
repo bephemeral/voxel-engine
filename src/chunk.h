@@ -24,5 +24,7 @@ private:
     GLuint VBO;
     GLuint VAO;
 
+    inline glm::vec3 indexToPosition(size_t index) const;
+    inline size_t positionToIndex(int x, int y, int z) const;
     inline bool isBlockSolid(int x, int y, int z) const;
 };

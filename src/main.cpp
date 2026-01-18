@@ -19,6 +19,8 @@
 
 inline constexpr glm::mat4 IDENTITY_MATRIX{1.0f};
 
+inline constexpr unsigned int CHUNKS_ROOT{32};
+
 int main()
 {
     glfwInit();
@@ -74,9 +76,9 @@ int main()
         std::filesystem::path{"assets/shaders/shader.fs"}};
 
     std::vector<Chunk> chunks;
-    for (int x = 0; x < 10; ++x)
+    for (int x = 0; x < CHUNKS_ROOT; ++x)
     {
-        for (int z = 0; z < 10; ++z)
+        for (int z = 0; z < CHUNKS_ROOT; ++z)
         {
             chunks.emplace_back(glm::vec3(x * Chunk::CHUNK_SIZE, 0, z * Chunk::CHUNK_SIZE));
         }
