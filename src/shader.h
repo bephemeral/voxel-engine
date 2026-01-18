@@ -12,7 +12,7 @@
 class Shader
 {
 public:
-    unsigned int ID;
+    GLuint ID;
 
     Shader(const char *vertexSource, const char *fragmentSource);
     Shader(const std::filesystem::path vertexSourceFile, const std::filesystem::path fragmentSourceFile);

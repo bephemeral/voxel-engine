@@ -28,7 +28,7 @@ public:
     float mouseSensitivity;
 
     // constructor with vectors
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
+    Camera(glm::vec3 position = glm::vec3(0.0f, 20.0f, 0.0f),
            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
            float yaw = YAW, float pitch = PITCH);
 
@@ -49,8 +49,8 @@ public:
 private:
     static inline constexpr float YAW = -90.0f;
     static inline constexpr float PITCH = 0.0f;
-    static inline constexpr float SPEED = 2.5f;
-    static inline constexpr float SENSITIVITY = 0.1f;
+    static inline constexpr float SPEED = 6.5f;
+    static inline constexpr float SENSITIVITY = 0.2f;
     static inline constexpr float ZOOM = 45.0f;
 
     // calculates the front vector from the Camera's (updated) Euler Angles

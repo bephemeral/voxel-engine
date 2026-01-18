@@ -1,7 +1,7 @@
 #include "shader.h"
 #include "camera.h"
 #include "window.h"
-#include "cube.h"
+#include "chunk.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -47,27 +47,23 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    Camera camera{glm::vec3(0.0f, 0.0f, 3.0f)};
+    Camera camera{};
     glfwSetWindowUserPointer(window, &camera);
 
     Shader shaderProgram{
         std::filesystem::path{"assets/shaders/shader.vs"},
         std::filesystem::path{"assets/shaders/shader.fs"}};
 
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VERTICES), VERTICES, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
+    std::vector<Chunk> chunks;
+    for (int x = 0; x < 10; ++x)
+    {
+        for (int z = 0; z < 10; ++z)
+        {
+            chunks.emplace_back(glm::vec3(x * Chunk::CHUNK_SIZE, 0, z * Chunk::CHUNK_SIZE));
+        }
+    }
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -75,38 +71,23 @@ int main()
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f)};
     shaderProgram.setMat4("projection", projection);
 
-    int index{0};
-    for (int x{0}; x < 10; ++x)
-    {
-        for (int z{0}; z < 10; ++z)
-        {
-            glm::vec3 translation;
-            translation.x = x;
-            translation.y = 0;
-            translation.z = z;
-
-            shaderProgram.setVec3("offsets[" + std::to_string(x * z) + "]", translation);
-        }
-    }
-
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        shaderProgram.setMat4("model", IDENTITY_MATRIX);
         shaderProgram.setMat4("view", camera.getViewMatrix());
 
-        glBindVertexArray(VAO);
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 36, 100);
+        for (const auto &chunk : chunks)
+        {
+            shaderProgram.setMat4("model", glm::translate(IDENTITY_MATRIX, chunk.position));
+            chunk.renderMesh();
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
 
     glfwTerminate();
     return 0;
