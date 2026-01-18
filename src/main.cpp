@@ -90,6 +90,8 @@ int main()
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f)};
     shaderProgram.setMat4("projection", projection);
 
+    bool wireframeMode{false};
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -105,6 +107,17 @@ int main()
             ImGui::Begin("Settings");
             ImGui::SliderFloat("Camera Speed", &camera.movementSpeed, 0.1f, 20.0f);
             ImGui::SliderFloat("Mouse Sensitivity", &camera.mouseSensitivity, 0.01f, 1.0f);
+            if (ImGui::Checkbox("Wireframe Mode", &wireframeMode))
+            {
+                if (wireframeMode)
+                {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                }
+                else
+                {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                }
+            }
             ImGui::End();
         }
 
