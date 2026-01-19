@@ -16,7 +16,8 @@ add_executable(engine
     src/shader.cpp 
     src/camera.cpp 
     src/window.cpp 
-    src/chunk.cpp 
+    src/chunk.cpp
+    src/world.cpp
     external/glad/src/glad.c
     ${IMGUI_SRC}
     ${IMGUI_BACKENDS}

@@ -2,6 +2,7 @@
 #include "camera.h"
 #include "window.h"
 #include "chunk.h"
+#include "world.h"
 #include "context.h"
 
 #include "PerlinNoise.hpp"
@@ -19,10 +20,9 @@
 
 #include <random>
 #include <iostream>
+#include "world.h"
 
 inline constexpr glm::mat4 IDENTITY_MATRIX{1.0f};
-
-inline constexpr unsigned int CHUNKS_ROOT{32};
 
 int main()
 {
@@ -77,15 +77,9 @@ int main()
         std::filesystem::path{"assets/shaders/shader.vs"},
         std::filesystem::path{"assets/shaders/shader.fs"}};
 
-    const siv::PerlinNoise perlin{std::random_device{}()};
-    std::vector<Chunk> chunks;
-    for (int x = 0; x < CHUNKS_ROOT; ++x)
-    {
-        for (int z = 0; z < CHUNKS_ROOT; ++z)
-        {
-            chunks.emplace_back(glm::vec3(x * Chunk::CHUNK_SIZE, 0, z * Chunk::CHUNK_SIZE), perlin);
-        }
-    }
+    int worldSizeChunks{16};
+    uint32_t seed{std::random_device{}()};
+    std::vector<Chunk> chunks = generateWorld(seed, worldSizeChunks);
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -120,6 +114,12 @@ int main()
                 {
                     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 }
+            }
+            ImGui::SliderInt("World Size", &worldSizeChunks, 1, 64);
+            ImGui::InputScalar("World Seed", ImGuiDataType_U32, &seed);
+            if (ImGui::Button("Regenerate World"))
+            {
+                chunks = generateWorld(seed, worldSizeChunks);
             }
             ImGui::End();
         }
