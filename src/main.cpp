@@ -2,6 +2,8 @@
 #include "camera.h"
 #include "window.h"
 #include "chunk.h"
+#include "context.h"
+
 #include "PerlinNoise.hpp"
 
 #include "imgui.h"
@@ -15,8 +17,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <random>
 #include <iostream>
-#include "context.h"
 
 inline constexpr glm::mat4 IDENTITY_MATRIX{1.0f};
 
@@ -75,7 +77,7 @@ int main()
         std::filesystem::path{"assets/shaders/shader.vs"},
         std::filesystem::path{"assets/shaders/shader.fs"}};
 
-    const siv::PerlinNoise perlin{123456u};
+    const siv::PerlinNoise perlin{std::random_device{}()};
     std::vector<Chunk> chunks;
     for (int x = 0; x < CHUNKS_ROOT; ++x)
     {
