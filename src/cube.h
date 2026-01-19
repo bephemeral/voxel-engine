@@ -3,54 +3,57 @@
 
 #include <glm/glm.hpp>
 
+inline constexpr float TOP_FACE_BRIGNTESS{1.0f};
+inline constexpr float BRIGHTNESS{0.8f};
+
 inline constexpr std::array<Vertex, 36> VERTICES{
     // Back face
-    Vertex{-0.5f, -0.5f, -0.5f}, // Bottom-left
-    Vertex{0.5f, 0.5f, -0.5f},   // Top-right
-    Vertex{0.5f, -0.5f, -0.5f},  // Bottom-right
-    Vertex{0.5f, 0.5f, -0.5f},   // Top-right
-    Vertex{-0.5f, -0.5f, -0.5f}, // Bottom-left
-    Vertex{-0.5f, 0.5f, -0.5f},  // Top-left
+    Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), BRIGHTNESS}, // Bottom-left
+    Vertex{glm::vec3(0.5f, 0.5f, -0.5f), BRIGHTNESS},   // Top-right
+    Vertex{glm::vec3(0.5f, -0.5f, -0.5f), BRIGHTNESS},  // Bottom-right
+    Vertex{glm::vec3(0.5f, 0.5f, -0.5f), BRIGHTNESS},   // Top-right
+    Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), BRIGHTNESS}, // Bottom-left
+    Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), BRIGHTNESS},  // Top-left
 
     // Front face
-    Vertex{-0.5f, -0.5f, 0.5f}, // Bottom-left
-    Vertex{0.5f, -0.5f, 0.5f},  // Bottom-right
-    Vertex{0.5f, 0.5f, 0.5f},   // Top-right
-    Vertex{0.5f, 0.5f, 0.5f},   // Top-right
-    Vertex{-0.5f, 0.5f, 0.5f},  // Top-left
-    Vertex{-0.5f, -0.5f, 0.5f}, // Bottom-left
+    Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), BRIGHTNESS}, // Bottom-left
+    Vertex{glm::vec3(0.5f, -0.5f, 0.5f), BRIGHTNESS},  // Bottom-right
+    Vertex{glm::vec3(0.5f, 0.5f, 0.5f), BRIGHTNESS},   // Top-right
+    Vertex{glm::vec3(0.5f, 0.5f, 0.5f), BRIGHTNESS},   // Top-right
+    Vertex{glm::vec3(-0.5f, 0.5f, 0.5f), BRIGHTNESS},  // Top-left
+    Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), BRIGHTNESS}, // Bottom-left
 
     // Left face
-    Vertex{-0.5f, 0.5f, 0.5f},   // Top-right
-    Vertex{-0.5f, 0.5f, -0.5f},  // Top-left
-    Vertex{-0.5f, -0.5f, -0.5f}, // Bottom-left
-    Vertex{-0.5f, -0.5f, -0.5f}, // Bottom-left
-    Vertex{-0.5f, -0.5f, 0.5f},  // Bottom-right
-    Vertex{-0.5f, 0.5f, 0.5f},   // Top-right
+    Vertex{glm::vec3(-0.5f, 0.5f, 0.5f), BRIGHTNESS},   // Top-right
+    Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), BRIGHTNESS},  // Top-left
+    Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), BRIGHTNESS}, // Bottom-left
+    Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), BRIGHTNESS}, // Bottom-left
+    Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), BRIGHTNESS},  // Bottom-right
+    Vertex{glm::vec3(-0.5f, 0.5f, 0.5f), BRIGHTNESS},   // Top-right
 
     // Right face
-    Vertex{0.5f, 0.5f, 0.5f},   // Top-left
-    Vertex{0.5f, -0.5f, -0.5f}, // Bottom-right
-    Vertex{0.5f, 0.5f, -0.5f},  // Top-right
-    Vertex{0.5f, -0.5f, -0.5f}, // Bottom-right
-    Vertex{0.5f, 0.5f, 0.5f},   // Top-left
-    Vertex{0.5f, -0.5f, 0.5f},  // Bottom-left
+    Vertex{glm::vec3(0.5f, 0.5f, 0.5f), BRIGHTNESS},   // Top-left
+    Vertex{glm::vec3(0.5f, -0.5f, -0.5f), BRIGHTNESS}, // Bottom-right
+    Vertex{glm::vec3(0.5f, 0.5f, -0.5f), BRIGHTNESS},  // Top-right
+    Vertex{glm::vec3(0.5f, -0.5f, -0.5f), BRIGHTNESS}, // Bottom-right
+    Vertex{glm::vec3(0.5f, 0.5f, 0.5f), BRIGHTNESS},   // Top-left
+    Vertex{glm::vec3(0.5f, -0.5f, 0.5f), BRIGHTNESS},  // Bottom-left
 
     // Bottom face
-    Vertex{-0.5f, -0.5f, -0.5f}, // Top-right
-    Vertex{0.5f, -0.5f, -0.5f},  // Top-left
-    Vertex{0.5f, -0.5f, 0.5f},   // Bottom-left
-    Vertex{0.5f, -0.5f, 0.5f},   // Bottom-left
-    Vertex{-0.5f, -0.5f, 0.5f},  // Bottom-right
-    Vertex{-0.5f, -0.5f, -0.5f}, // Top-right
+    Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), BRIGHTNESS}, // Top-right
+    Vertex{glm::vec3(0.5f, -0.5f, -0.5f), BRIGHTNESS},  // Top-left
+    Vertex{glm::vec3(0.5f, -0.5f, 0.5f), BRIGHTNESS},   // Bottom-left
+    Vertex{glm::vec3(0.5f, -0.5f, 0.5f), BRIGHTNESS},   // Bottom-left
+    Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), BRIGHTNESS},  // Bottom-right
+    Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), BRIGHTNESS}, // Top-right
 
     // Top face
-    Vertex{-0.5f, 0.5f, -0.5f}, // Top-left
-    Vertex{0.5f, 0.5f, 0.5f},   // Bottom-right
-    Vertex{0.5f, 0.5f, -0.5f},  // Top-right
-    Vertex{0.5f, 0.5f, 0.5f},   // Bottom-right
-    Vertex{-0.5f, 0.5f, -0.5f}, // Top-left
-    Vertex{-0.5f, 0.5f, 0.5f}   // Bottom-left
+    Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), TOP_FACE_BRIGNTESS}, // Top-left
+    Vertex{glm::vec3(0.5f, 0.5f, 0.5f), TOP_FACE_BRIGNTESS},   // Bottom-right
+    Vertex{glm::vec3(0.5f, 0.5f, -0.5f), TOP_FACE_BRIGNTESS},  // Top-right
+    Vertex{glm::vec3(0.5f, 0.5f, 0.5f), TOP_FACE_BRIGNTESS},   // Bottom-right
+    Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), TOP_FACE_BRIGNTESS}, // Top-left
+    Vertex{glm::vec3(-0.5f, 0.5f, 0.5f), TOP_FACE_BRIGNTESS}   // Bottom-left
 };
 
 inline constexpr glm::vec3 faceOffset[]{

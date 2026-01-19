@@ -65,7 +65,6 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     Camera camera{};
     bool paused{false};
@@ -92,7 +91,7 @@ int main()
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f)};
     shaderProgram.setMat4("projection", projection);
 
-    bool wireframeMode{true};
+    bool wireframeMode{false};
 
     while (!glfwWindowShouldClose(window))
     {

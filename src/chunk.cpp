@@ -30,8 +30,10 @@ Chunk::Chunk(glm::vec3 pos, const siv::PerlinNoise &perlin) : position{pos}
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
     // setup vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 }
 
 void Chunk::generateMesh()
@@ -55,7 +57,10 @@ void Chunk::generateMesh()
                     {
                         for (int i{0}; i < 6; ++i)
                         {
-                            vertices.push_back(VERTICES[face * 6 + i] + glm::vec3{x, y, z});
+                            Vertex vertex{VERTICES[face * 6 + i]};
+                            vertex.position += glm::vec3{x, y, z};
+
+                            vertices.push_back(vertex);
                         }
                     }
                 }

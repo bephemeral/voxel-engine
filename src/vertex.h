@@ -1,4 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
 
-using Vertex = glm::vec3;
+struct Vertex
+{
+    glm::vec3 position;
+    float brightness;
+};
