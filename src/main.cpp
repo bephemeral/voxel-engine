@@ -78,7 +78,8 @@ int main()
         std::filesystem::path{"assets/shaders/shader.fs"}};
 
     int worldSizeChunks{16};
-    uint32_t seed{std::random_device{}()};
+    std::random_device device{};
+    uint32_t seed{device()};
     std::vector<Chunk> chunks = generateWorld(seed, worldSizeChunks);
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -117,6 +118,10 @@ int main()
             }
             ImGui::SliderInt("World Size", &worldSizeChunks, 1, 64);
             ImGui::InputScalar("World Seed", ImGuiDataType_U32, &seed);
+            if (ImGui::Button("Random Seed"))
+            {
+                seed = device();
+            }
             if (ImGui::Button("Regenerate World"))
             {
                 chunks = generateWorld(seed, worldSizeChunks);
