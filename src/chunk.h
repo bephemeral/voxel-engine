@@ -1,6 +1,7 @@
 #pragma once
 #include "vertex.h"
 
+#include "PerlinNoise.hpp"
 #include <array>
 #include <vector>
 #include <glad/glad.h>
@@ -15,7 +16,7 @@ public:
     std::array<bool, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE> blocks{};
     std::vector<Vertex> vertices;
 
-    Chunk(glm::vec3 pos);
+    Chunk(glm::vec3 pos, const siv::PerlinNoise &perlin);
 
     void generateMesh();
     void renderMesh() const;

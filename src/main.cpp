@@ -2,6 +2,7 @@
 #include "camera.h"
 #include "window.h"
 #include "chunk.h"
+#include "PerlinNoise.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -75,12 +76,13 @@ int main()
         std::filesystem::path{"assets/shaders/shader.vs"},
         std::filesystem::path{"assets/shaders/shader.fs"}};
 
+    const siv::PerlinNoise perlin{123456u};
     std::vector<Chunk> chunks;
     for (int x = 0; x < CHUNKS_ROOT; ++x)
     {
         for (int z = 0; z < CHUNKS_ROOT; ++z)
         {
-            chunks.emplace_back(glm::vec3(x * Chunk::CHUNK_SIZE, 0, z * Chunk::CHUNK_SIZE));
+            chunks.emplace_back(glm::vec3(x * Chunk::CHUNK_SIZE, 0, z * Chunk::CHUNK_SIZE), perlin);
         }
     }
 
@@ -90,7 +92,7 @@ int main()
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f)};
     shaderProgram.setMat4("projection", projection);
 
-    bool wireframeMode{false};
+    bool wireframeMode{true};
 
     while (!glfwWindowShouldClose(window))
     {

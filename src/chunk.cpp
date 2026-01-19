@@ -1,21 +1,24 @@
 #include "chunk.h"
 #include "cube.h"
 
-Chunk::Chunk(glm::vec3 pos) : position{pos}
+Chunk::Chunk(glm::vec3 pos, const siv::PerlinNoise &perlin) : position{pos}
 {
-    int index{0};
-    int height{CHUNK_SIZE - 1};
-    int last_x{0};
-    for (auto &block : blocks)
-    {
-        glm::vec3 blockPos{indexToPosition(index++)};
-        if (blockPos.x != last_x)
-        {
-            --height;
-            last_x = blockPos.x;
-        }
+    constexpr double SCALE = 0.05;
+    constexpr int OCTAVES = 4;
 
-        block = (blockPos.y <= height);
+    for (size_t i = 0; i < blocks.size(); ++i)
+    {
+        glm::vec3 blockPos = indexToPosition(i);
+
+        double noise = perlin.octave2D(
+            (pos.x + blockPos.x) * SCALE,
+            (pos.z + blockPos.z) * SCALE,
+            OCTAVES);
+
+        noise = (noise + 1.0) * 0.5;
+        int height = static_cast<int>(noise * CHUNK_SIZE);
+
+        blocks[i] = (blockPos.y <= height);
     }
     generateMesh();
 

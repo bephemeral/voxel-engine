@@ -27,6 +27,7 @@ target_include_directories(engine PUBLIC
     external/glad/include 
     external/imgui 
     external/imgui/backends
+    external/noise
 )
 
 find_package(glfw3 CONFIG REQUIRED)
