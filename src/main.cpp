@@ -85,7 +85,8 @@ int main()
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     shaderProgram.use();
-    glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f)};
+    int renderDistanceChunks{worldSizeChunks};
+    glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, static_cast<float>(renderDistanceChunks * Chunk::CHUNK_SIZE))};
     shaderProgram.setMat4("projection", projection);
 
     bool wireframeMode{false};
@@ -115,6 +116,11 @@ int main()
                 {
                     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 }
+            }
+            if (ImGui::SliderInt("Render Distance", &renderDistanceChunks, 1, worldSizeChunks))
+            {
+                glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, static_cast<float>(renderDistanceChunks * Chunk::CHUNK_SIZE))};
+                shaderProgram.setMat4("projection", projection);
             }
             ImGui::SliderInt("World Size", &worldSizeChunks, 1, 64);
             ImGui::InputScalar("World Seed", ImGuiDataType_U32, &seed);
