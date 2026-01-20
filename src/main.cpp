@@ -22,8 +22,6 @@
 #include <iostream>
 #include "world.h"
 
-inline constexpr glm::mat4 IDENTITY_MATRIX{1.0f};
-
 int main()
 {
     glfwInit();
@@ -81,8 +79,8 @@ int main()
 
     int worldSizeChunks{16};
     std::random_device device{};
-    uint32_t seed{device()};
-    std::vector<Chunk> chunks = generateWorld(seed, worldSizeChunks);
+    siv::PerlinNoise::seed_type seed{device()};
+    World world{seed, worldSizeChunks};
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -132,18 +130,14 @@ int main()
             }
             if (ImGui::Button("Regenerate World"))
             {
-                chunks = generateWorld(seed, worldSizeChunks);
+                world = World{seed, worldSizeChunks};
             }
             ImGui::End();
         }
 
         shaderProgram.setMat4("view", camera.getViewMatrix());
 
-        for (const auto &chunk : chunks)
-        {
-            shaderProgram.setMat4("model", glm::translate(IDENTITY_MATRIX, chunk.position));
-            chunk.renderMesh();
-        }
+        world.renderWorld(shaderProgram);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
