@@ -80,12 +80,14 @@ int main()
     int worldSizeChunks{16};
     std::random_device device{};
     siv::PerlinNoise::seed_type seed{device()};
-    World world{seed, worldSizeChunks};
+    float scale{0.0035};
+    int octaves{6};
+    World world{seed, worldSizeChunks, static_cast<double>(scale), octaves};
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     shaderProgram.use();
-    int renderDistanceChunks{worldSizeChunks};
+    int renderDistanceChunks{worldSizeChunks * 2};
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, static_cast<float>(renderDistanceChunks * Chunk::CHUNK_SIZE))};
     shaderProgram.setMat4("projection", projection);
 
@@ -117,20 +119,22 @@ int main()
                     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 }
             }
-            if (ImGui::SliderInt("Render Distance", &renderDistanceChunks, 1, worldSizeChunks))
+            if (ImGui::SliderInt("Render Distance", &renderDistanceChunks, 1, worldSizeChunks * 2))
             {
                 glm::mat4 projection{glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, static_cast<float>(renderDistanceChunks * Chunk::CHUNK_SIZE))};
                 shaderProgram.setMat4("projection", projection);
             }
             ImGui::SliderInt("World Size", &worldSizeChunks, 1, 64);
             ImGui::InputScalar("World Seed", ImGuiDataType_U32, &seed);
+            ImGui::SliderFloat("Noise Scale", &scale, 0.001f, 0.05f);
+            ImGui::SliderInt("Noise Octaves", &octaves, 1, 10);
             if (ImGui::Button("Random Seed"))
             {
                 seed = device();
             }
             if (ImGui::Button("Regenerate World"))
             {
-                world = World{seed, worldSizeChunks};
+                world = World{seed, worldSizeChunks, static_cast<double>(scale), octaves};
             }
             ImGui::End();
         }

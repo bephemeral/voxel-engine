@@ -1,22 +1,19 @@
 #include "chunk.h"
 #include "cube.h"
 
-Chunk::Chunk(glm::vec3 pos, const siv::PerlinNoise &perlin) : position{pos}
+Chunk::Chunk(glm::vec3 pos, const siv::PerlinNoise &perlin, double scale, int octaves) : position{pos}
 {
-    constexpr double SCALE = 0.05;
-    constexpr int OCTAVES = 4;
-
     for (size_t i = 0; i < blocks.size(); ++i)
     {
         glm::vec3 blockPos = indexToPosition(i);
 
         double noise = perlin.octave2D(
-            (pos.x + blockPos.x) * SCALE,
-            (pos.z + blockPos.z) * SCALE,
-            OCTAVES);
+            (pos.x + blockPos.x) * scale,
+            (pos.z + blockPos.z) * scale,
+            octaves);
 
         noise = (noise + 1.0) * 0.5;
-        int height = static_cast<int>(noise * CHUNK_SIZE);
+        int height = static_cast<int>(noise * CHUNK_HEIGHT);
 
         blocks[i] = (blockPos.y <= height);
     }
@@ -40,7 +37,7 @@ void Chunk::generateMesh()
 {
     for (int x{0}; x < CHUNK_SIZE; ++x)
     {
-        for (int y{0}; y < CHUNK_SIZE; ++y)
+        for (int y{0}; y < CHUNK_HEIGHT; ++y)
         {
             for (int z{0}; z < CHUNK_SIZE; ++z)
             {
@@ -77,8 +74,8 @@ void Chunk::renderMesh() const
 
 inline glm::vec3 Chunk::indexToPosition(size_t index) const
 {
-    int x{index / (CHUNK_SIZE * CHUNK_SIZE)};
-    index %= (CHUNK_SIZE * CHUNK_SIZE);
+    int x{index / (CHUNK_SIZE * CHUNK_HEIGHT)};
+    index %= (CHUNK_SIZE * CHUNK_HEIGHT);
 
     int y{index / CHUNK_SIZE};
     int z{index % CHUNK_SIZE};
@@ -87,13 +84,13 @@ inline glm::vec3 Chunk::indexToPosition(size_t index) const
 
 inline size_t Chunk::positionToIndex(int x, int y, int z) const
 {
-    return x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z;
+    return x * CHUNK_SIZE * CHUNK_HEIGHT + y * CHUNK_SIZE + z;
 }
 
 inline bool Chunk::isBlockSolid(int x, int y, int z) const
 {
     if (x < 0 || x >= CHUNK_SIZE ||
-        y < 0 || y >= CHUNK_SIZE ||
+        y < 0 || y >= CHUNK_HEIGHT ||
         z < 0 || z >= CHUNK_SIZE)
     {
         return false;

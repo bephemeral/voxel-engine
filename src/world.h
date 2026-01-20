@@ -7,7 +7,7 @@
 class World
 {
 public:
-    World(siv::PerlinNoise::seed_type seed, int worldSizeChunks);
+    World(siv::PerlinNoise::seed_type seed, int worldSizeChunks, double scale, int octaves);
 
     void renderWorld(const Shader &shaderProgram) const;
 

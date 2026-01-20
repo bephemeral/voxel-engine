@@ -11,12 +11,13 @@ class Chunk
 {
 public:
     static inline constexpr size_t CHUNK_SIZE{16};
+    static inline constexpr size_t CHUNK_HEIGHT{128};
 
     glm::vec3 position;
-    std::array<bool, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE> blocks{};
+    std::array<bool, CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE> blocks{};
     std::vector<Vertex> vertices;
 
-    Chunk(glm::vec3 pos, const siv::PerlinNoise &perlin);
+    Chunk(glm::vec3 pos, const siv::PerlinNoise &perlin, double scale, int octaves);
 
     void generateMesh();
     void renderMesh() const;

@@ -4,7 +4,7 @@
 
 inline constexpr glm::mat4 IDENTITY_MATRIX{1.0f};
 
-World::World(siv::PerlinNoise::seed_type seed, int worldSizeChunks)
+World::World(siv::PerlinNoise::seed_type seed, int worldSizeChunks, double scale, int octaves)
 {
     const siv::PerlinNoise perlin{seed};
 
@@ -12,7 +12,7 @@ World::World(siv::PerlinNoise::seed_type seed, int worldSizeChunks)
     {
         for (int z = 0; z < worldSizeChunks; ++z)
         {
-            chunks.emplace_back(glm::vec3(x * Chunk::CHUNK_SIZE, 0, z * Chunk::CHUNK_SIZE), perlin);
+            chunks.emplace_back(glm::vec3(x * Chunk::CHUNK_SIZE, 0, z * Chunk::CHUNK_SIZE), perlin, scale, octaves);
         }
     }
 }
